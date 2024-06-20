@@ -63,15 +63,13 @@ Alarm::CallBack()
     // 2. Update RunTime & RRTime
 
     // 3. Check Round Robin
-    if(kernel->stats->totalTicks % 100 == 0) {
-        kernel->scheduler->UpdatePriority();
-    }
+    kernel->scheduler->UpdatePriority();
 
     Thread* currentThread = kernel->currentThread;
-    currentThread->setRunTime(currentThread->getRunTime() + 1);
-    currentThread->setRRTime(currentThread->getRRTime() + 1);
+    currentThread->setRunTime(currentThread->getRunTime() + 100);
+    currentThread->setRRTime(currentThread->getRRTime() + 100);
     
-    if (currentThread->getRRTime() >= 400) {
+    if (currentThread->getPriority() < 50 && currentThread->getRRTime() >= 400) {
         currentThread->setRRTime(0);
         interrupt->YieldOnReturn();
     }

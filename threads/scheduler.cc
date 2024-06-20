@@ -93,8 +93,7 @@ Scheduler::ReadyToRun (Thread *thread)
         DEBUG(dbgMLFQ, "[InsertToQueue] Tick [" << stats->totalTicks << "]: Thread [" 
             << thread->getID() << "] is inserted into queue L1");
         if (thread->getRemainingBurstTime() < kernel->currentThread->getRemainingBurstTime())
-            // kernel->interrupt->YieldOnReturn();
-            kernel->currentThread->Yield();
+            kernel->interrupt->YieldOnReturn();
     } else if (thread->getPriority() >= 50) {
         L2ReadyQueue->Insert(thread);
         DEBUG(dbgMLFQ, "[InsertToQueue] Tick [" << stats->totalTicks << "]: Thread [" 
@@ -104,6 +103,8 @@ Scheduler::ReadyToRun (Thread *thread)
         DEBUG(dbgMLFQ, "[InsertToQueue] Tick [" << stats->totalTicks << "]: Thread [" 
             << thread->getID() << "] is inserted into queue L3");
     }
+    thread->setStatus(READY);
+    thread->setWaitTime(0);
     // readyList->Insert(thread);
 }
 
@@ -288,8 +289,8 @@ Scheduler::UpdatePriority()
         if (thread->getWaitTime() >= 400) {
             DEBUG(dbgMLFQ, "[UpdatePriority] Tick [" << stats->totalTicks << "]: Thread [" 
                 << thread->getID() << "] changes its priority from [" << thread->getPriority() 
-                << "] to [" << thread->getPriority() + 10 << "]");
-            thread->setPriority(thread->getPriority() + 10);
+                << "] to [" << min(thread->getPriority() + 10, 149) << "]");
+            thread->setPriority(min(thread->getPriority() + 10, 149));
             thread->setWaitTime(0);
         }
     }
@@ -300,8 +301,8 @@ Scheduler::UpdatePriority()
         if (thread->getWaitTime() >= 400) {
             DEBUG(dbgMLFQ, "[UpdatePriority] Tick [" << stats->totalTicks << "]: Thread [" 
                 << thread->getID() << "] changes its priority from [" << thread->getPriority() 
-                << "] to [" << thread->getPriority() + 10 << "]");
-            thread->setPriority(thread->getPriority() + 10);
+                << "] to [" << min(thread->getPriority() + 10, 149) << "]");
+            thread->setPriority(min(thread->getPriority() + 10, 149));
             thread->setWaitTime(0);
         }
         if (thread->getPriority() >= 100) {
@@ -318,8 +319,8 @@ Scheduler::UpdatePriority()
         if (thread->getWaitTime() >= 400) {
             DEBUG(dbgMLFQ, "[UpdatePriority] Tick [" << stats->totalTicks << "]: Thread [" 
                 << thread->getID() << "] changes its priority from [" << thread->getPriority() 
-                << "] to [" << thread->getPriority() + 10 << "]");
-            thread->setPriority(thread->getPriority() + 10);
+                << "] to [" << min(thread->getPriority() + 10, 149) << "]");
+            thread->setPriority(min(thread->getPriority() + 10, 149));
             thread->setWaitTime(0);
         }
         if (thread->getPriority() >= 50) {

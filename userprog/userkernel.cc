@@ -178,6 +178,7 @@ ForkExecute(Thread *t)
     //<TODO>
     // When Thread t goes to Running state in the first time, its file should be loaded & executed.
     // Hint: This function would not be called until Thread t is on running state.
+    DEBUG(dbgMLFQ, "ForkExecute => fork thread id: " << t->getID() << ", currentTick: " << kernel->stats->totalTicks);
     t->space->Load(t->getName());
     t->space->Execute(t->getName());
     //<TODO>
